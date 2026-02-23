@@ -49,7 +49,7 @@
     "format": "console",
     "prefix": "[taskGo-node]",
     "director": "logs",
-    "showLine": false,
+    "showLine": true,
     "encode-level": "LowercaseLevelEncoder",
     "stacktrace-key": "stacktrace",
     "log-in-console": true
