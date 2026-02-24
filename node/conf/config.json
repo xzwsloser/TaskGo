@@ -3,7 +3,7 @@
     "address": "127.0.0.1",
     "port": "3306",
     "config": "charset=utf8mb4&parseTime=True&loc=Local",
-    "db-name": "task_go",
+    "db-name": "gozero",
     "username": "root",
     "password": "123456",
     "max-idle-conns": 100,
@@ -40,7 +40,7 @@
     "host": "smtp.qq.com",
     "is-ssl": true,
     "secret": "secret",
-    "nickname": "crony定时任务平台",
+    "nickname": "taskGO 定时任务管理平台",
     "#to": "Email default notification object",
     "to": ["test@qq.com"]
   },
