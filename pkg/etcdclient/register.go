@@ -2,7 +2,6 @@ package etcdclient
 
 import (
 	"context"
-	"sync"
 
 	"github.com/xzwsloser/TaskGo/pkg/logger"
 	clientv3 "go.etcd.io/etcd/client/v3"
@@ -16,7 +15,6 @@ type Register struct {
 	cancel			context.CancelFunc
 	leaseID			clientv3.LeaseID
 	ttl				int64
-	mutex			*sync.Mutex
 }
 
 func NewRegister(ttl int64) *Register {
@@ -24,14 +22,10 @@ func NewRegister(ttl int64) *Register {
 		client: GetEtcdClient(),
 		stop: make(chan struct{}),
 		ttl: ttl,
-		mutex: &sync.Mutex{},
 	}
 } 
 
 func (r *Register) RegisterService(key, val string) error {
-	r.mutex.Lock()
-	defer r.mutex.Unlock()
-
 	err := r.grant()
 	if err != nil {
 		logger.GetLogger().Error(err.Error())
@@ -50,6 +44,7 @@ func (r *Register) RegisterService(key, val string) error {
 }
 
 func (r *Register) grant() error {
+
 	// Application Lease ID
 	leaseResp, err := r.client.Grant(r.ttl)
 	if err != nil {
@@ -76,10 +71,18 @@ func (r *Register) keepAlive(key, value string) {
 	for {
 		select {
 		case <-r.stop:
+			// unregister
+			err := r.RevokeLease()
+			if err != nil {
+				logger.GetLogger().Error(err.Error())
+				return 
+			}
 			return
+
 		case _, ok := <- r.keepAliveChan:
 			if !ok {
 				logger.GetLogger().Info("The Lease ID Expired.")
+
 				// register the key again
 				r.RegisterService(key, value)
 				return 
@@ -89,11 +92,7 @@ func (r *Register) keepAlive(key, value string) {
 }
 
 func (r *Register) Stop() {
-	r.mutex.Lock()
-	defer r.mutex.Unlock()
-
-	close(r.stop)
-	r.RevokeLease()
+	r.stop <- struct{}{}
 }
 
 func (r *Register) RevokeLease() error {
