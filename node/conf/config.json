@@ -36,13 +36,13 @@
   },
   "email": {
     "port": 465,
-    "from": "from",
+    "from": "3088655042@qq.com",
     "host": "smtp.qq.com",
     "is-ssl": true,
-    "secret": "secret",
+    "secret": "<YOUR_SECRET_KEY>",
     "nickname": "taskGO 定时任务管理平台",
     "#to": "Email default notification object",
-    "to": ["test@qq.com"]
+    "to": ["3088655042@qq.com"]
   },
   "log": {
     "level": "debug",

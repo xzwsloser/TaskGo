@@ -84,7 +84,11 @@ func (r *Register) keepAlive(key, value string) {
 				logger.GetLogger().Info("The Lease ID Expired.")
 
 				// register the key again
-				r.RegisterService(key, value)
+				err := r.RegisterService(key, value)
+				if err != nil {
+					logger.GetLogger().Error(err.Error())
+				}
+
 				return 
 			}
 		}
