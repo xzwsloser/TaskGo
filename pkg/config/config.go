@@ -44,7 +44,7 @@ type (
 		Env                string `mapstructure:"env" json:"env" yaml:"env" ini:"env"`
 		Addr               int    `mapstructure:"addr" json:"addr" yaml:"addr" ini:"addr"`
 		NodeTtl            int64  `mapstructure:"node-ttl" json:"node-ttl" yaml:"node-ttl" ini:"node-ttl"`
-		JobProcTtl         int64  `mapstructure:"job-proc-ttl" json:"job-proc-ttl" yaml:"job-proc-ttl" ini:"job-proc-ttl"`
+		TaskProcTtl         int64  `mapstructure:"task-proc-ttl" json:"task-proc-ttl" yaml:"task-proc-ttl" ini:"task-proc-ttl"`
 		Version            string `mapstructure:"version" json:"version" yaml:"version" ini:"version"`
 		LogCleanPeriod     int64  `mapstructure:"log-clean-period" json:"log-clean-period" yaml:"log-clean-period" ini:"log-clean-period"`
 		LogCleanExpiration int64  `mapstructure:"log-clean-expiration" json:"log-clean-expiration" yaml:"log-clean-expiration" ini:"log-clean-expiration"`
