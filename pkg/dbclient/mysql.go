@@ -51,6 +51,17 @@ func getDsn(mc config.Mysql) string {
 					mc.Username, mc.Password, mc.Address, mc.Port, mc.Dbname)
 }
 
+func emptyDsn(mc config.Mysql) string {
+	if mc.Address == "" {
+		mc.Address = "127.0.0.1"
+	} 
+
+	if mc.Port == "" {
+		mc.Port = "3306"
+	}
+
+	return fmt.Sprintf("%s:%s@tcp(%s:%s)", mc.Username, mc.Port, mc.Address, mc.Port)
+}
 
 func InitMysql() (*gorm.DB, error) {
 	mc := config.GetConfig().Mysql
@@ -85,7 +96,7 @@ func GetMysqlDB() *gorm.DB {
 
 func CreateDatabase(driver, createSql string) error {
 	mc := config.GetConfig().Mysql
-	dsn := getDsn(mc)
+	dsn := emptyDsn(mc)
 	db, err := sql.Open(driver, dsn)
 	if err != nil {
 		fmt.Printf("Failed to connect to database: %s", err)
