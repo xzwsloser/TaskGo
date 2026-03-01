@@ -109,7 +109,3 @@ func WatchTaskProc(NodeUUID string) clientv3.WatchChan {
 	return etcdclient.GetEtcdClient().Watch(fmt.Sprintf(etcdclient.KeyEtcdNodeProcPrefix, NodeUUID), clientv3.WithPrefix())
 }
 
-
-
-
-

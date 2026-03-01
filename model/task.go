@@ -14,8 +14,8 @@ type taskType int
 
 const (
 	// task type 
-	taskTypeCmd  = taskType(1)
-	taskTypeHttp = taskType(2)
+	TaskTypeCmd  = taskType(1)
+	TaskTypeHttp = taskType(2)
 
 	// http method
 	HttpMethodGet  = 1
