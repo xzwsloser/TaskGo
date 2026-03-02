@@ -7,6 +7,8 @@ const (
 	NodeConnFail	   =  2
 
 	TaskGoNodeTableName    = "node"
+
+	NodeSystemInfoSwitch   = "alive"
 )
 
 // register to /taskGo/node/<node_uuid>/

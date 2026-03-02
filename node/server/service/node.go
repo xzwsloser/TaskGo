@@ -237,6 +237,7 @@ func (srv *NodeServer) modifyTask(task *handler.Task) {
 		return
 	}
 	srv.deleteTask(prevTask.ID)
+	srv.tasks[task.ID] = task
 	srv.addTask(task)
 }
 
