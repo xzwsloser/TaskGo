@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/robfig/cron/v3"
+	"github.com/jakecoffman/cron"
 	"github.com/xzwsloser/TaskGo/model"
 	"github.com/xzwsloser/TaskGo/pkg/etcdclient"
 	"github.com/xzwsloser/TaskGo/pkg/logger"

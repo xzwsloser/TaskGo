@@ -9,6 +9,7 @@ import (
 	"github.com/xzwsloser/TaskGo/pkg/config"
 	"github.com/xzwsloser/TaskGo/pkg/dbclient"
 	"github.com/xzwsloser/TaskGo/pkg/etcdclient"
+	"github.com/xzwsloser/TaskGo/pkg/httpclient"
 	"github.com/xzwsloser/TaskGo/pkg/logger"
 	"github.com/xzwsloser/TaskGo/pkg/notify"
 	"github.com/xzwsloser/TaskGo/pkg/utils"
@@ -92,6 +93,9 @@ func InitNodeServer() (*config.Config, error) {
 
 	// email
 	notify.InitNoticer()
+
+	// httpclient
+	httpclient.NewHttpClient()
 
 	// etcdclient
 	_, err = etcdclient.InitEtcdClient()

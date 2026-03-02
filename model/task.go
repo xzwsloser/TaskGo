@@ -106,6 +106,11 @@ func (t *Task) FindById() error {
 		Where("id = ?", t.ID).First(t).Error
 }
 
+func (t *Task) UpdateByNodeUUID(nodeUUID string) error {
+	return dbclient.GetMysqlDB().Table(t.TableName()).
+		Where("run_on = ?", t.RunOn).Updates(t).Error
+}
+
 func (t *Task) SplitCmd() {
 	commands := strings.SplitN(t.Command, " ", 2)
 	if len(commands) == 1 {
@@ -132,7 +137,7 @@ func (t *Task) Check() error {
 		return ErrEmptyTaskCmd
 	}
 
-	if len(t.Cmd) == 0 && t.Type == taskTypeCmd {
+	if len(t.Cmd) == 0 && t.Type == TaskTypeCmd {
 		t.SplitCmd()
 	}
 

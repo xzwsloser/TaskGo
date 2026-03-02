@@ -3,6 +3,9 @@ package model
 import "github.com/xzwsloser/TaskGo/pkg/dbclient"
 
 const (
+	NodeConnSuccess    =  1
+	NodeConnFail	   =  2
+
 	TaskGoNodeTableName    = "node"
 )
 

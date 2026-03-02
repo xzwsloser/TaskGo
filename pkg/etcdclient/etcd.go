@@ -159,6 +159,10 @@ func (cli *EtcdClient) KeepAlive(ctx context.Context,
 	return cli.client.KeepAlive(ctx, leaseID)
 }
 
+func (cli *EtcdClient) Close() error {
+	return cli.client.Close()
+}
+
 // Dstribute Lock
 func (cli *EtcdClient) GetLock(key string, leaseID clientv3.LeaseID) (bool, error) {
 	lockKey := fmt.Sprintf(KeyEtcdLockFormat, key)
