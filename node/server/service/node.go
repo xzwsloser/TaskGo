@@ -154,7 +154,7 @@ func (srv *NodeServer) Down() {
 }
 
 // @Description: Stop Node Server, Delete Task
-func (srv *NodeServer) Stop() {
+func (srv *NodeServer) Stop(any) {
 	srv.Down()
 	_, err := etcdclient.GetEtcdClient().Delete(fmt.Sprintf(etcdclient.KeyEtcdNodeFormat, srv.UUID))
 	if err != nil {
