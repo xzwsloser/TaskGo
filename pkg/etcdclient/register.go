@@ -2,6 +2,7 @@ package etcdclient
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/xzwsloser/TaskGo/pkg/logger"
 	clientv3 "go.etcd.io/etcd/client/v3"
@@ -18,6 +19,7 @@ type Register struct {
 }
 
 func NewRegister(ttl int64) *Register {
+	fmt.Printf("\n[DEBUG] TTL = %d\n", ttl)
 	return &Register{
 		client: GetEtcdClient(),
 		stop: make(chan struct{}),
@@ -81,13 +83,13 @@ func (r *Register) keepAlive(key, value string) {
 
 		case _, ok := <- r.keepAliveChan:
 			if !ok {
-				logger.GetLogger().Info("The Lease ID Expired.")
+				// logger.GetLogger().Info("The Lease ID Expired.")
 
 				// register the key again
-				err := r.RegisterService(key, value)
-				if err != nil {
-					logger.GetLogger().Error(err.Error())
-				}
+				// err := r.RegisterService(key, value)
+				// if err != nil {
+				//    logger.GetLogger().Error(err.Error())
+				// }
 
 				return 
 			}

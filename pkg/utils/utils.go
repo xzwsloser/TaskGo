@@ -68,7 +68,7 @@ func GetLocalIP() (net.IP, error) {
 		}
 
 		for _, addr := range addrs {
-			ipnet, ok := addr.(*net.IPAddr)
+			ipnet, ok := addr.(*net.IPNet)
 			if !ok || ipnet.IP.IsLoopback() {
 				continue
 			}
@@ -89,7 +89,7 @@ func PanicTrace(err any) string {
 	stackBuf := make([]byte, 4096)
 	n := runtime.Stack(stackBuf, false)
 
-	return fmt.Sprintf("panic %v %s", err, stackBuf[:n])
+	return fmt.Sprintf("panic %v %s", err, string(stackBuf[:n]))
 }
 
 // @Description: Transform From Panic To Error
@@ -97,7 +97,7 @@ func PanicTrace(err any) string {
 func PanicToError(f func()) (err error) {
 	defer func() {
 		if e := recover() ; e != nil {
-			err = fmt.Errorf(PanicTrace(e))
+			err = fmt.Errorf("%s", PanicTrace(e))
 		}
 	}()
 

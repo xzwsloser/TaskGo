@@ -34,7 +34,7 @@ func InitEtcdClient() (*EtcdClient, error) {
 
 	_defaultEtcdClient = &EtcdClient{
 		client: cli,
-		reqTimeout: time.Duration(ec.ReqTimeout),
+		reqTimeout: time.Duration(ec.ReqTimeout) * time.Second,
 	}
 
 	return _defaultEtcdClient, nil

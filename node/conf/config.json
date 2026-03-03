@@ -3,7 +3,7 @@
     "address": "127.0.0.1",
     "port": "3306",
     "config": "charset=utf8mb4&parseTime=True&loc=Local",
-    "db-name": "gozero",
+    "db-name": "task_go",
     "username": "root",
     "password": "123456",
     "max-idle-conns": 100,
@@ -14,7 +14,7 @@
   "system": {
     "env": "testing",
     "addr": 8089,
-    "#node-timeout": "Node registration timeout, in seconds",
+    "#node-ttl": "Node registration timeout, in seconds",
     "node-ttl": 5,
     "#task-proc-ttl": "The unit is second",
     "task-proc-ttl": 300,

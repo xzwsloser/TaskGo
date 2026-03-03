@@ -263,8 +263,31 @@ func (srv *NodeServer) loadTasks() (err error) {
 	return 
 }
 
-// TODO: Node Server Listen And Run
 func (srv *NodeServer) Run() (err error) {
+	defer func() {
+		if err != nil {
+			srv.Stop(err)
+		}
+	}()
+
+	if err = srv.loadTasks(); err != nil {
+		logger.GetLogger().Error(fmt.Sprintf("node [%s] failed to load task, error: %v", srv.UUID, err))
+		return 
+	}
+
+	insertId, err := srv.Node.Insert()
+	if err != nil {
+		logger.GetLogger().Error(fmt.Sprintf("failed to insert node %s", srv.UUID))
+		return 
+	}
+
+	srv.Node.ID = insertId
+
+	srv.Cron.Start()
+
+	go srv.watchTasks()
+	go srv.watchOnce()
+	go srv.watchSystemInfo()
 	return 
 }
 
