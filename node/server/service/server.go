@@ -20,7 +20,10 @@ import (
 */
 
 const (
-	Version = "v1.0.0"
+	NodeName	= "TaskGo/Node"
+	NodeVersion		= "v1.0.0"
+
+	NodeProjectName	= "taskGo_node"
 )
 
 var (
@@ -44,7 +47,7 @@ func InitNodeServer() (*config.Config, error) {
 	}
 
 	if NodeOptions.Version {
-		fmt.Printf("TaskGo Node Server Version: %s\n", Version)
+		fmt.Printf("%s Version: %s\n", NodeName, NodeVersion)
 		os.Exit(0)
 	}
 
@@ -67,7 +70,7 @@ func InitNodeServer() (*config.Config, error) {
 	}
 
 	// log
-	l := logger.InitLogger("TaskGo")
+	l := logger.InitLogger(NodeProjectName)
 	if l == nil {
 		fmt.Printf("Failed to Init Logger")
 		os.Exit(0)

@@ -1,12 +1,21 @@
 package utils
 
 import (
+	"bytes"
 	"fmt"
 	"net"
 	"os"
 	"runtime"
+	"time"
 
 	"github.com/google/uuid"
+)
+
+var (
+	unknown  	= []byte("???")
+	centerDot	= []byte("")
+	dot			= []byte(".")
+	slash		= []byte("/")
 )
 
 // FileName Operation
@@ -42,6 +51,11 @@ const (
 	TimeFormatDateV3 = "20060102150405"
 	TimeFormatDateV4 = "2006/01/02-15:04:05.000"
 )
+
+func FormatTime(t time.Time) string {
+	var tStr = t.Format(TimeFormatSecond)
+	return tStr
+}
 
 // UUID
 // @Description: No Need Distributed ID Generator
@@ -104,6 +118,64 @@ func PanicToError(f func()) (err error) {
 	f()
 	return 
 }
+
+// Panic Handler Utils
+
+// Error Handler
+// @Description: Buffer Caller Stack
+func Stack(skip int) []byte {
+	buf := &bytes.Buffer{}
+	var lines [][]byte
+	var lastFile string
+	for i := skip; ; i ++ {
+		pc, file, line, ok := runtime.Caller(i)
+		if !ok {
+			break
+		}
+
+		fmt.Fprintf(buf, "%s:%d (0x%x)\n", file, line, pc)
+
+		if file != lastFile {
+			data, err := os.ReadFile(file)
+			if err != nil {
+				continue
+			}
+			lines = bytes.Split(data, []byte{'\n'})
+			lastFile = file
+		}
+		fmt.Fprintf(buf, "\t%s: %s\n", function(pc), source(lines, line))
+	}
+
+	return buf.Bytes()
+}
+
+func source(lines [][]byte, n int) []byte {
+	n--
+	if n < 0 || n >= len(lines) {
+		return unknown
+	}
+	return bytes.TrimSpace(lines[n])
+}
+
+func function(pc uintptr) []byte {
+	fn := runtime.FuncForPC(pc)
+	if fn == nil {
+		return unknown
+	}
+
+	name := []byte(fn.Name())
+	if lastSlash := bytes.LastIndex(name, slash); lastSlash >= 0 {
+		name = name[lastSlash+1:]
+	}
+
+	if period := bytes.Index(name, dot); period >= 0 {
+		name = name[period+1:]
+	}
+
+	name = bytes.ReplaceAll(name, centerDot, dot)
+	return name
+}
+
 
 
 
