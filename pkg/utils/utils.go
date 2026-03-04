@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bytes"
+	"crypto/md5"
 	"fmt"
 	"net"
 	"os"
@@ -175,6 +176,23 @@ func function(pc uintptr) []byte {
 	name = bytes.ReplaceAll(name, centerDot, dot)
 	return name
 }
+
+// Encrypt Tool
+func MD5(s string) string {
+	data := []byte(s)
+	hash := md5.Sum(data)
+	encryptedStr := fmt.Sprintf("%x", hash)
+	return encryptedStr
+}
+
+
+
+
+
+
+
+
+
 
 
 

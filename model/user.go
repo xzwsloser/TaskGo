@@ -1,6 +1,9 @@
 package model
 
-import "github.com/xzwsloser/TaskGo/pkg/dbclient"
+import (
+	"github.com/xzwsloser/TaskGo/pkg/dbclient"
+	"github.com/xzwsloser/TaskGo/pkg/utils"
+)
 
 const (
 	RoleNormal	= 1
@@ -45,6 +48,32 @@ func (u *User) FindById() error {
 		Select("id", "username", "email", "role", "created", "updated").
 		First(u).Error
 }
+
+func (u *User) FindPartInfo() error {
+	return dbclient.GetMysqlDB().
+		   Select("id", "username", "email", "role", "created", "updated").
+		   Table(u.TableName()).
+		   Where("username = ? And password = ?", u.UserName, utils.MD5(u.Password)).
+		   Find(u).Error
+}
+
+func (u *User) FindByUsername() error {
+	return dbclient.GetMysqlDB().
+			Table(u.TableName()).
+			Where("username = ?", u.UserName).
+			Find(u).Error
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 

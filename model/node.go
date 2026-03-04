@@ -1,6 +1,8 @@
 package model
 
-import "github.com/xzwsloser/TaskGo/pkg/dbclient"
+import (
+	"github.com/xzwsloser/TaskGo/pkg/dbclient"
+)
 
 const (
 	NodeConnSuccess    =  1
@@ -54,6 +56,51 @@ func (n *Node) FindByUUID() error {
 	return dbclient.GetMysqlDB().Table(n.TableName()).
 		Where("uuid = ?", n.UUID).First(n).Error
 }
+
+func (n *Node) FindAndPage(page int, pageSize int) ([]Node, int64, error) {
+	db := dbclient.GetMysqlDB().Table(n.TableName())
+	if len(n.UUID) > 0 {
+		db = db.Where("uuid = ?", n.UUID)
+	}
+
+	if len(n.IP) > 0 {
+		db = db.Where("ip = ?", n.IP)
+	}
+
+	if n.Status > 0 {
+		db = db.Where("status = ?", n.Status)
+	}
+
+	if n.UpTime > 0 {
+		db = db.Where("up > ?", n.UpTime)
+	}
+
+	nodes := make([]Node, 0, 2)
+	var total int64
+	err := db.Count(&total).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	err = db.Limit(pageSize).Offset((page-1)*pageSize).Order("up desc").Find(&nodes).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return nodes, total, nil
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
