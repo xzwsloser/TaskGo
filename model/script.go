@@ -82,6 +82,41 @@ func (s *Script) Check() error {
 	return nil
 }
 
+func (s *Script) FindAndPage(page int, pageSize int) ([]Script, int64, error) {
+	db := dbclient.GetMysqlDB().Table(s.TableName())
+	if s.ID > 0 {
+		db = db.Where("id = ?", s.ID)
+	}
+
+	if len(s.Name) > 0 {
+		db = db.Where("name like ?", s.Name + "%")
+	}
+
+	var total int64
+	err := db.Count(&total).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	scripts := make([]Script, 0, 2)
+	err = db.Limit(pageSize).Offset((page-1)*pageSize).Find(&scripts).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return scripts, total, nil
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 

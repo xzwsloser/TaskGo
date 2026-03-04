@@ -16,5 +16,13 @@ type (
 )
 
 
+func (p *PageInfo) Check() {
+	if p.PageSize <= 0 {
+		p.PageSize = 20
+	}
 
+	if p.Page <= 0 {
+		p.Page = 1
+	}
+}
 
