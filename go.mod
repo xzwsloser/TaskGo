@@ -4,6 +4,8 @@ go 1.25.5
 
 require (
 	github.com/fsnotify/fsnotify v1.9.0
+	github.com/gin-gonic/gin v1.12.0
+	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/google/uuid v1.6.0
 	github.com/jakecoffman/cron v0.0.0-20190106200828-7e2009c226a5
 	github.com/jessevdk/go-flags v1.6.1
@@ -13,6 +15,7 @@ require (
 	go.etcd.io/etcd/api/v3 v3.6.8
 	go.etcd.io/etcd/client/v3 v3.6.8
 	go.uber.org/zap v1.27.1
+	golang.org/x/sync v0.19.0
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 	gorm.io/driver/mysql v1.6.0
 	gorm.io/gorm v1.31.1
@@ -29,7 +32,6 @@ require (
 	github.com/coreos/go-systemd/v22 v22.5.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.13 // indirect
 	github.com/gin-contrib/sse v1.1.0 // indirect
-	github.com/gin-gonic/gin v1.12.0 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
