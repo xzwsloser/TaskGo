@@ -10,12 +10,12 @@ import (
 	"github.com/xzwsloser/TaskGo/pkg/utils"
 )
 
-type taskType int
+type TaskType int
 
 const (
 	// task type 
-	TaskTypeCmd  = taskType(1)
-	TaskTypeHttp = taskType(2)
+	TaskTypeCmd  = TaskType(1)
+	TaskTypeHttp = TaskType(2)
 
 	// http method
 	HttpMethodGet  = 1
@@ -58,7 +58,7 @@ type Task struct {
 	// Retry interval for task execution failure
 	// in seconds. If the value is less than 0, try again immediately
 	RetryInterval int64    `json:"retry_interval" gorm:"size:10;column:retry_interval;default:0"`
-	Type          taskType `json:"task_type" gorm:"size:1;column:type;not null;" binding:"required"`
+	Type          TaskType `json:"task_type" gorm:"size:1;column:type;not null;" binding:"required"`
 	HttpMethod    int     `json:"http_method" gorm:"size:1;column:http_method"`
 	NotifyType    int     `json:"notify_type" gorm:"size:1;column:notify_type;not null"`
 	// Whether to allocate nodes
@@ -168,7 +168,40 @@ func (t *Task) Unmarshal() error {
 	return err
 }
 
+func (t *Task) FindAndPage(page int, pageSize int) ([]Task, int64, error) {
+	db := dbclient.GetMysqlDB().Table(t.TableName())
+	if t.ID > 0 {
+		db = db.Where("id = ?", t.ID)
+	}
 
+	if len(t.Name) > 0 {
+		db = db.Where("name like ?", t.Name + "%")
+	}
 
+	if len(t.RunOn) > 0 {
+		db = db.Where("run_on = ?", t.RunOn)
+	}
 
+	if t.Type > 0 {
+		db = db.Where("type = ?", t.Type)
+	}
+
+	if t.Status > 0 {
+		db = db.Where("status = ?", t.Status)
+	}
+
+	var total int64
+	err := db.Count(&total).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	tasks := make([]Task, 0, 2)
+	err = db.Limit(pageSize).Offset((page-1)*pageSize).Find(&tasks).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return tasks, total, nil
+}
 

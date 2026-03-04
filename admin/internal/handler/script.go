@@ -81,7 +81,7 @@ func (s *ScriptHandler) Delete(c *gin.Context) {
 }
 
 // @Router: /script/find
-// @Method: POST
+// @Method: GET
 // @Description: Find Preset Script By ID
 func (s *ScriptHandler) FindById(c *gin.Context) {
 	var req request.ByID

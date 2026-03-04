@@ -1,8 +1,6 @@
 package handler
-
-import (
+import ( 
 	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"github.com/xzwsloser/TaskGo/admin/internal/middleware"
 )
@@ -33,7 +31,21 @@ func configRouter(r *gin.Engine) {
 	{
 		script.POST("add", scriptHandler.CreateOrUpdate)
 		script.POST("delete", scriptHandler.Delete)
-		script.POST("find", scriptHandler.FindById)
+		script.GET("find", scriptHandler.FindById)
 		script.POST("search", scriptHandler.Search)
 	}
+
+	task := r.Group("/task")
+	task.Use(middleware.JWTAuth())
+	{
+		task.POST("add", taskHandler.CreateOrUpdate)
+		task.POST("delete", taskHandler.Delete)
+		task.POST("find", taskHandler.FindById)
+		task.POST("search", taskHandler.Search)
+		task.POST("once", taskHandler.Once)
+	}
+
 }
+
+
+

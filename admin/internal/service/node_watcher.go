@@ -39,6 +39,28 @@ func (nw *NodeWatcherService) GetTasksCount(nodeUUID string) (int, error) {
 	return int(resp.Count), nil
 }
 
+func (nw *NodeWatcherService) NodeListToArray() []string {
+	nw.mu.Lock()
+	defer nw.mu.Unlock()
+	nodes := make([]string, 0)
+
+	for k, _ := range nw.nodeLists {
+		nodes = append(nodes, k)
+	}
+
+	return nodes 
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 

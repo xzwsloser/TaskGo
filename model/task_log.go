@@ -45,6 +45,34 @@ func (tl *TaskLog) Insert() (int, error) {
 	return tl.ID, nil
 }
 
+func (tl *TaskLog) FindAndPage(page int, pageSize int) ([]TaskLog, int64, error) {
+	db := dbclient.GetMysqlDB().Table(tl.TableName())
+	if len(tl.Name) > 0 {
+		db = db.Where("name like ?", tl.Name + "%")
+	}
 
+	if tl.TaskId > 0 {
+		db = db.Where("task_id = ?", tl.TaskId)
+	}
 
+	if len(tl.NodeUUID) > 0 {
+		db = db.Where("node_uuid = ?", tl.NodeUUID)
+	}
+
+	db = db.Where("success = ?", tl.Success)
+
+	var total int64
+	err := db.Count(&total).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	taskLogs := make([]TaskLog, 0, 2)
+	err = db.Limit(pageSize).Offset((page-1)*pageSize).Find(&taskLogs).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return taskLogs, total, err
+}
 
