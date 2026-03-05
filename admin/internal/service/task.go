@@ -2,10 +2,12 @@ package service
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/xzwsloser/TaskGo/admin/internal/model/request"
 	"github.com/xzwsloser/TaskGo/admin/internal/model/resp"
 	"github.com/xzwsloser/TaskGo/model"
+	"github.com/xzwsloser/TaskGo/pkg/dbclient"
 	"github.com/xzwsloser/TaskGo/pkg/etcdclient"
 	"github.com/xzwsloser/TaskGo/pkg/logger"
 	"github.com/xzwsloser/TaskGo/pkg/utils"
@@ -125,6 +127,39 @@ func (*TaskService) GetRunningTaskCount() (int64, error) {
 	}
 	return resp.Count, nil
 }
+
+func cleanupLogs(expirationTime int64) error {
+	sql := fmt.Sprintf("delete from %s where start_time < ?", model.TaskGoTaskLogTableName)
+	return dbclient.GetMysqlDB().Exec(sql, time.Now().Unix()-expirationTime).Error
+}
+
+// @Description: Clear Log At Certain Interval
+func RunLogCleaner(cleanPeriod time.Duration, 
+	expiration int64) (close chan struct{}) {
+	t := time.NewTicker(cleanPeriod)
+	close = make(chan struct{})
+	go func() {
+		for {
+			select {
+			case <-t.C:
+				err := cleanupLogs(expiration)
+				if err != nil {
+					logger.GetLogger().Error(fmt.Sprintf("clean up logs at time:%v error:%s", time.Now(), err.Error()))
+				}
+			case <-close:
+				t.Stop()
+				return
+			}
+		}
+	}()
+	return
+}
+
+
+
+
+
+
 
 
 

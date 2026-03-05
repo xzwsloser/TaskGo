@@ -5,6 +5,12 @@ import (
 	"github.com/xzwsloser/TaskGo/admin/internal/middleware"
 )
 
+func RegisterHandlers(r *gin.Engine) {
+	r.Use(middleware.CorsAllow())
+
+	configRouter(r)
+}
+
 func configRouter(r *gin.Engine) {
 	health := r.Group("/ping")
 	{
