@@ -205,3 +205,12 @@ func (t *Task) FindAndPage(page int, pageSize int) ([]Task, int64, error) {
 	return tasks, total, nil
 }
 
+func (t *Task) GetNotAssignedTasks() ([]Task, error) {
+	var tasks []Task
+	err := dbclient.GetMysqlDB().
+				Table(t.TableName()).
+				Where("status = ?", TaskStatusNotAssigned).
+				Find(&tasks).Error
+	return tasks, err
+}
+

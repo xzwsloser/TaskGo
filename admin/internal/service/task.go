@@ -79,4 +79,12 @@ func (*TaskService) ExecOnce(once *request.ReqTaskOnce) error {
 	return err
 }
 
+func (*TaskService) GetNotAssignTasks() ([]model.Task, error) {
+	t := &model.Task{}
+	return t.GetNotAssignedTasks()
+}
+
+
+
+
 
