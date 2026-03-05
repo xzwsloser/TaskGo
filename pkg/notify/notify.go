@@ -8,6 +8,10 @@ import (
 	"github.com/xzwsloser/TaskGo/pkg/utils"
 )
 
+const (
+	NotifyEmail		=	0
+)
+
 type Message struct {
 	Type		int
 	IP			string
