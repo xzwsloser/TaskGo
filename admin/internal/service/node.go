@@ -3,7 +3,6 @@ package service
 import (
 	"errors"
 	"fmt"
-
 	"github.com/xzwsloser/TaskGo/admin/internal/model/request"
 	"github.com/xzwsloser/TaskGo/model"
 	"github.com/xzwsloser/TaskGo/pkg/etcdclient"
@@ -54,6 +53,17 @@ func (*NodeService) Search(r *request.ReqNodeSearch) ([]model.Node, int64, error
 	nodes, total, err := node.FindAndPage(page, pageSize)
 	return nodes, total, err
 }
+
+func (*NodeService) GetNodeCount(status int) (int64, error) {
+	node := &model.Node{}
+	node.Status = status
+	total, err := node.GetNodeCount()
+	if err != nil {
+		return 0, nil
+	}
+	return total, nil
+}
+
 
 
 

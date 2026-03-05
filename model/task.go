@@ -76,6 +76,11 @@ type Task struct {
 	Cmd      []string `json:"cmd" gorm:"-"`
 }
 
+type DateCount struct {
+	Date	string	`json:"date" gorm:"column:date"`
+	Count	string	`json:"count" gorm:"column:count"`
+}
+
 func (t *Task) TableName() string {
 	return TaskGoTaskTableName
 }
@@ -212,5 +217,31 @@ func (t *Task) GetNotAssignedTasks() ([]Task, error) {
 				Where("status = ?", TaskStatusNotAssigned).
 				Find(&tasks).Error
 	return tasks, err
+}
+
+func (t *Task) GetTaskCountAfter(startTime int64, success int) (int64, error) {
+	db := dbclient.GetMysqlDB().
+				   Table(t.TableName()).
+				   Where("start_time > ? and end_time != 0 and success = ?", startTime, success)
+	var total int64
+	err := db.Count(&total).Error
+	if err != nil {
+		return 0, err
+	}
+	return total, nil
+}
+
+func (t *Task) GetTaskExecCount(start, end int64, success int) ([]DateCount, error) {
+	var dateCount []DateCount
+	db := dbclient.GetMysqlDB().Table(t.TableName()).
+			Select("FROM_UNIXTIME( start_time, '%Y-%m-%d' ) AS date", "COUNT( * ) AS count").
+			Group("date").
+			Order("date ASC").
+			Where("start_time > ? and start_time < ? and end_time != 0 and success = ?", start, end, success)
+	err := db.Find(&dateCount).Error
+	if err != nil {
+		return nil, err
+	}
+	return dateCount, nil
 }
 

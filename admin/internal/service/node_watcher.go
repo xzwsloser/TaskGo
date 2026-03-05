@@ -339,6 +339,31 @@ func (nw *NodeWatcherService) Watch() error {
 	return nil
 }
 
+// @Description: Get The System Info Of Server
+func (nw *NodeWatcherService) GetNodeSystemInfo(uuid string) (*utils.SystemInfo, error) {
+	defer func() {
+		// delete switch info for next system change
+		_, _ = nw.client.Delete(fmt.Sprintf(etcdclient.KeyEtcdSystemSwitch, uuid))
+	}()
+
+	info := &utils.SystemInfo{}
+	res, err := nw.client.Get(fmt.Sprintf(etcdclient.KeyEtcdSystemGet, uuid), clientv3.WithPrefix())
+	if err != nil || len(res.Kvs) == 0 {
+		return info, err
+	}
+
+	err = json.Unmarshal(res.Kvs[0].Value, info)
+	if err != nil {
+		logger.GetLogger().Error(fmt.Sprintf("json error: %v", err))
+		return nil, err
+	}
+
+	return info, err
+}
+
+
+
+
 
 
 

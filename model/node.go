@@ -90,17 +90,20 @@ func (n *Node) FindAndPage(page int, pageSize int) ([]Node, int64, error) {
 	return nodes, total, nil
 }
 
+func (n *Node) GetNodeCount() (int64, error) {
+	db := dbclient.GetMysqlDB().Table(n.TableName())
+	if n.Status > 0 {
+		db = db.Where("status = ?", n.Status)
+	}
 
+	var total int64
+	err := db.Count(&total).Error
+	if err != nil {
+		return 0, err
+	}
 
-
-
-
-
-
-
-
-
-
+	return total, nil
+}
 
 
 

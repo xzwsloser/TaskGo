@@ -4,9 +4,12 @@ import (
 	"fmt"
 
 	"github.com/xzwsloser/TaskGo/admin/internal/model/request"
+	"github.com/xzwsloser/TaskGo/admin/internal/model/resp"
 	"github.com/xzwsloser/TaskGo/model"
 	"github.com/xzwsloser/TaskGo/pkg/etcdclient"
 	"github.com/xzwsloser/TaskGo/pkg/logger"
+	"github.com/xzwsloser/TaskGo/pkg/utils"
+	clientv3 "go.etcd.io/etcd/client/v3"
 )
 
 type TaskService struct {
@@ -49,6 +52,7 @@ func (*TaskService) AutoAllocateNode() string {
 	return allocatedUUID
 }
 
+// @Description: Search For Task By Page And Condition
 func (*TaskService) Search(r *request.ReqTaskSearch) ([]model.Task, int64, error) {
 	task := &model.Task{}
 	task.ID = r.ID
@@ -61,6 +65,7 @@ func (*TaskService) Search(r *request.ReqTaskSearch) ([]model.Task, int64, error
 	return task.FindAndPage(page, pageSize)
 }
 
+// @Description: Search For Task Log By Page And Condition
 func (*TaskService) SearchTaskLog(r *request.ReqTaskLogSearch) ([]model.TaskLog, int64, error) {
 	taskLog := &model.TaskLog{}
 	taskLog.NodeUUID = r.NodeUUID
@@ -72,6 +77,7 @@ func (*TaskService) SearchTaskLog(r *request.ReqTaskLogSearch) ([]model.TaskLog,
 	return taskLog.FindAndPage(page, pageSize)
 }
 
+// @Description: Exec For The Certain Task Immediately
 func (*TaskService) ExecOnce(once *request.ReqTaskOnce) error {
 	_, err := etcdclient.GetEtcdClient().
 						 PutWithTTL(fmt.Sprintf(etcdclient.KeyEtcdOnceFormat, once.TaskId),
@@ -79,12 +85,46 @@ func (*TaskService) ExecOnce(once *request.ReqTaskOnce) error {
 	return err
 }
 
+// @Description: Get Not Assign Task
 func (*TaskService) GetNotAssignTasks() ([]model.Task, error) {
 	t := &model.Task{}
 	return t.GetNotAssignedTasks()
 }
 
+// @Description: Get Task Count Of Today
+func (*TaskService) GetTodayTaskExecCount(success int) (int64, error) {
+	startTime := utils.GetTodayTimeStamp()
+	task := &model.Task{}
+	count, err := task.GetTaskCountAfter(startTime, success)
+	return count, err
+}
 
+// @Description: Get Task At Certain Period Of Time
+func (*TaskService) GetTaskExecCount(start, end int64, success int) ([]resp.RspDateCount, error) {
+	task := &model.Task{}
+	mdc, err := task.GetTaskExecCount(start, end, success)
+	if err != nil {
+		return nil, err
+	}
+	dc := make([]resp.RspDateCount, len(mdc))
+	for idx := range mdc {
+		dc[idx] = resp.RspDateCount{
+			Date: mdc[idx].Date,
+			Count: mdc[idx].Count,
+		}
+	}
+	return dc, nil
+}
+
+// @Description: Get The Number Of Running Task
+func (*TaskService) GetRunningTaskCount() (int64, error) {
+	resp, err := etcdclient.GetEtcdClient().Get(etcdclient.KeyEtcdProcPrefix, clientv3.WithPrefix(), clientv3.WithCountOnly())
+	if err != nil {
+		logger.GetLogger().Error(fmt.Sprintf("failed to count running task: %s", err.Error()))
+		return 0, err
+	}
+	return resp.Count, nil
+}
 
 
 

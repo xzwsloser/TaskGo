@@ -45,6 +45,13 @@ func configRouter(r *gin.Engine) {
 		task.POST("once", taskHandler.Once)
 	}
 
+	stat := r.Group("/stat")
+	stat.Use(middleware.JWTAuth())
+	{
+		stat.GET("today", statHandler.GetTodayStatistics)
+		stat.GET("week", statHandler.GetWeekStatistics)
+		stat.GET("system", statHandler.GetSystemInfo)
+	}
 }
 
 
