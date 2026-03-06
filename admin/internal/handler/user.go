@@ -66,7 +66,7 @@ func (*UserHandler) Register(c *gin.Context) {
 		return
 	}
 	user, err := userService.FindByUsername(req.UserName)
-	if user != nil || err != nil {
+	if user != nil && user.ID > 0 {
 		logger.GetLogger().Error(fmt.Sprintf("[user_register] db find by username:%s", req.UserName))
 		resp.FailWithMessage(resp.ErrorUserNameExist, "[user_register] the user name has already been used", c)
 		return
@@ -90,4 +90,3 @@ func (*UserHandler) Register(c *gin.Context) {
 	userModel.ID = insertId
 	resp.OkWithDetailed(userModel, "register success", c)
 }
-

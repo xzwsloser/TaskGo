@@ -96,14 +96,14 @@ func (*TaskService) GetNotAssignTasks() ([]model.Task, error) {
 // @Description: Get Task Count Of Today
 func (*TaskService) GetTodayTaskExecCount(success int) (int64, error) {
 	startTime := utils.GetTodayTimeStamp()
-	task := &model.Task{}
+	task := &model.TaskLog{}
 	count, err := task.GetTaskCountAfter(startTime, success)
 	return count, err
 }
 
 // @Description: Get Task At Certain Period Of Time
 func (*TaskService) GetTaskExecCount(start, end int64, success int) ([]resp.RspDateCount, error) {
-	task := &model.Task{}
+	task := &model.TaskLog{}
 	mdc, err := task.GetTaskExecCount(start, end, success)
 	if err != nil {
 		return nil, err

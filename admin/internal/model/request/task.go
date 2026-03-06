@@ -17,7 +17,7 @@ type (
 		ID     int            	`json:"id" form:"id"`
 		Name   string         	`json:"name" form:"name"`
 		RunOn  string         	`json:"run_on" form:"run_on"`
-		Type   model.TaskType 	`json:"job_type" form:"type"`
+		Type   model.TaskType 	`json:"task_type" form:"type"`
 		Status int            	`json:"status" form:"status"`
 	}
 

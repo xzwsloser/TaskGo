@@ -219,7 +219,7 @@ func (t *Task) GetNotAssignedTasks() ([]Task, error) {
 	return tasks, err
 }
 
-func (t *Task) GetTaskCountAfter(startTime int64, success int) (int64, error) {
+/* func (t *Task) GetTaskCountAfter(startTime int64, success int) (int64, error) {
 	db := dbclient.GetMysqlDB().
 				   Table(t.TableName()).
 				   Where("start_time > ? and end_time != 0 and success = ?", startTime, success)
@@ -229,9 +229,9 @@ func (t *Task) GetTaskCountAfter(startTime int64, success int) (int64, error) {
 		return 0, err
 	}
 	return total, nil
-}
+} */
 
-func (t *Task) GetTaskExecCount(start, end int64, success int) ([]DateCount, error) {
+/* func (t *Task) GetTaskExecCount(start, end int64, success int) ([]DateCount, error) {
 	var dateCount []DateCount
 	db := dbclient.GetMysqlDB().Table(t.TableName()).
 			Select("FROM_UNIXTIME( start_time, '%Y-%m-%d' ) AS date", "COUNT( * ) AS count").
@@ -243,5 +243,5 @@ func (t *Task) GetTaskExecCount(start, end int64, success int) ([]DateCount, err
 		return nil, err
 	}
 	return dateCount, nil
-}
+} */
 

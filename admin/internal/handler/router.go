@@ -7,8 +7,7 @@ import (
 
 func RegisterHandlers(r *gin.Engine) {
 	r.Use(middleware.CorsAllow())
-
-	configRouter(r)
+configRouter(r)
 }
 
 func configRouter(r *gin.Engine) {
@@ -46,7 +45,7 @@ func configRouter(r *gin.Engine) {
 	{
 		task.POST("add", taskHandler.CreateOrUpdate)
 		task.POST("delete", taskHandler.Delete)
-		task.POST("find", taskHandler.FindById)
+		task.GET("find", taskHandler.FindById)
 		task.POST("search", taskHandler.Search)
 		task.POST("once", taskHandler.Once)
 	}

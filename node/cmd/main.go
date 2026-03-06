@@ -1,7 +1,5 @@
 package main
-
-import (
-	"fmt"
+import ( "fmt"
 	"os"
 
 	"github.com/xzwsloser/TaskGo/node/server/service"

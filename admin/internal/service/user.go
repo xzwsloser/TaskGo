@@ -1,6 +1,9 @@
 package service
 
 import (
+	"errors"
+	"fmt"
+
 	"github.com/xzwsloser/TaskGo/model"
 	"gorm.io/gorm"
 )
@@ -21,7 +24,8 @@ func (s *UserService) FindByUsername(username string) (*model.User, error) {
 	u.UserName = username
 	err := u.FindByUsername()
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
+		fmt.Printf("[Debug] Error = %s\n", err.Error())
+		if errors.Is(err, gorm.ErrRecordNotFound){
 			return nil, nil
 		} 
 		return nil, err

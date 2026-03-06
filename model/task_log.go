@@ -76,3 +76,30 @@ func (tl *TaskLog) FindAndPage(page int, pageSize int) ([]TaskLog, int64, error)
 	return taskLogs, total, err
 }
 
+func (tl *TaskLog) GetTaskCountAfter(startTime int64, success int) (int64, error) {
+	db := dbclient.GetMysqlDB().
+				   Table(tl.TableName()).
+				   Where("start_time > ? and end_time != 0 and success = ?", startTime, success)
+	var total int64
+	err := db.Count(&total).Error
+	if err != nil {
+		return 0, err
+	}
+	return total, nil
+}
+
+
+func (tl *TaskLog) GetTaskExecCount(start, end int64, success int) ([]DateCount, error) {
+	var dateCount []DateCount
+	db := dbclient.GetMysqlDB().Table(tl.TableName()).
+			Select("FROM_UNIXTIME( start_time, '%Y-%m-%d' ) AS date", "COUNT( * ) AS count").
+			Group("date").
+			Order("date ASC").
+			Where("start_time > ? and start_time < ? and end_time != 0 and success = ?", start, end, success)
+	err := db.Find(&dateCount).Error
+	if err != nil {
+		return nil, err
+	}
+	return dateCount, nil
+}
+
