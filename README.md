@@ -49,7 +49,7 @@ make run_admin
 
 > **同时需要注意在启动节点之前, 需要修改配置文件, 比如需要修改发送邮件需要的 secret key 改为自己的**
 
-启动 admin 节点之后, 对应的 api server 会监听 8088 端口, 本项目暂时没有提供前端页面, 只提供了 API 接口, 可以参考: [TaskGo 接口文档.md](./docs/TaskGo接口文档)
+启动 admin 节点之后, 对应的 api server 会监听 8088 端口, 本项目暂时没有提供前端页面, 只提供了 API 接口, 可以参考: [TaskGo 接口文档.md](./docs/TaskGo接口文档.md)
 
 ## 4. 项目截图
 
